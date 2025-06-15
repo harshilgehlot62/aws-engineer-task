@@ -1,84 +1,63 @@
-# 🛠️ Founding AWS Engineer – Practical Task
+# 🚀 Containerized Sample App Deployment on AWS with Terraform
 
-Welcome! This task is your first step toward joining **EagerMinds** as a **Founding AWS Engineer**. We’re looking for someone who can build real infrastructure—not just talk about it.
-
-This task mimics what you’ll do at the job: automate deployments, architect securely, and think with a product-first mindset.
+This project deploys a containerized **Node.js app** (or any containerized app) using **ECS Fargate**, with best practices in **networking**, **security**, **logging**, and **automation**, all managed via **Terraform**.
 
 ---
 
-## 📦 Task Overview
+## 🏗️ Architecture Overview
 
-**Goal:** Deploy a containerized sample app (Node.js, Next.js, or any static site) on AWS using **Terraform** (or CDK) and follow security, scalability, and automation best practices.
-
----
-
-## ✅ Deliverables
-
-- A working Terraform (or CDK) project to deploy the architecture
-- Code pushed to your **forked repo**
-- A `README.md` explaining your design decisions and how to deploy
-
----
-
-## 📋 Task Details
-
-### 1. Infrastructure Requirements
-
-- **VPC**
-  - Public and private subnets across 2 AZs
-  - NAT Gateway for outbound internet
-
-- **Compute**
-  - Use **ECS Fargate** (or EC2) to deploy a sample app container
-  - Attach an **Application Load Balancer** (ALB) in front
-  
-- **Storage**
-  - Use **S3** for static assets or logs
-
-- **Networking & Security**
-  - Secure **Security Groups** (no open 0.0.0.0 unnecessarily)
-  - Use **ACM + HTTPS** on ALB
-  - Use **IAM roles** for ECS task
-
-- **CI/CD (Bonus)**
-  - Set up GitHub Actions or CodePipeline to deploy automatically on commit
-
-- **Monitoring**
-  - Enable basic **CloudWatch** logging for ECS tasks and ALB access logs
+- **VPC** with public and private subnets across 2 AZs
+- **NAT Gateway** to enable internet access for private subnets
+- **ALB** (HTTPS enabled via **ACM**) routing traffic to ECS
+- **Amazon ECS (Fargate)** for running containerized app
+- **ACM Certificate** for TLS/SSL (HTTPS) on ALB
+- **S3 Bucket** to store **ALB access logs**
+- **CloudWatch Logs** enabled for ECS and ALB
+- **IAM Roles** for secure ECS task execution
+- **Security Groups** with least-privilege rules
+- ✅ **CI/CD via GitHub Actions** — build, push to ECR, deploy
 
 ---
 
-## 🧪 Evaluation Criteria
+## 🧱 Prerequisites
 
-| Criteria                         | Points |
-|----------------------------------|--------|
-| IaC Code Quality & Modularity    | 20     |
-| AWS Services Used Correctly      | 20     |
-| Security Best Practices          | 20     |
-| Documentation (README)          | 15     |
-| Bonus: CI/CD or Monitoring       | 10     |
-| Working Architecture             | 15     |
-
-> 🔥 Bonus: Small touches like cost efficiency, tagging, Graviton instances, etc.
+- [Terraform](https://www.terraform.io/downloads)
+- [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
+- AWS credentials configured (`aws configure`)
+- (Optional) A domain in Route53 if using a custom domain with ACM
 
 ---
 
-## 📤 How to Submit
+## 📁 Project Structure
 
-1. **Fork this repository** to your own GitHub.
-2. Push your code + README to the fork.
-3. Submit your repo link to us via the form/email shared.
+├── app/ # Sample Node.js app with Dockerfile
+├── main.tf # Terraform entry point
+├── vpc.tf # VPC, subnets, NAT GW
+├── alb.tf # ALB, Target Group, Listener
+├── ecs.tf # ECS Cluster, Task Definition, Service
+├── s3.tf # S3 bucket for ALB logs
+├── acm.tf # ACM TLS certificate
+├── iam.tf # IAM roles and policies
+├── outputs.tf # Useful Terraform outputs
+├── variables.tf # Input variables
+├── terraform.tfvars # Variable values (gitignored)
+└── .github/workflows/deploy.yml # GitHub Actions CI/CD pipeline
+
 
 ---
 
-## 🧠 Tips
+## 🚀 How to Deploy
 
-- You may use ChatGPT, Google, or any docs. Just don’t blindly copy code.
-- Use Terraform modules or CDK constructs wisely. Clean code > fancy features.
+### 1. Clone Your Fork
 
----
+```bash
+git clone https://github.com/YOUR_USERNAME/terraform-ecs-app.git
+cd terraform-ecs-app
 
-## 💬 Questions?
-Raise a GitHub issue or email us at [admin@eagerminds.in](mailto:admin@eagerminds.in).
 
-We’re excited to see what you build 🚀
+#Initialize Terraform
+  terraform init
+#Review the Execution Plan
+terraform plan
+#Apply the Infrastructure
+terraform apply -auto-approve
